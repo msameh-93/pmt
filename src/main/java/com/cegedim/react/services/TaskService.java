@@ -18,14 +18,14 @@ public class TaskService {
 	public Task saveOrUpdateProjectTask(Task task, String projectIdentifier, String principalName) {
 		
 		//gets backlog by checking if project exists and belongs to the logged in user (Principal)
-		Backlog backlog= projectService.getProjectById(projectIdentifier, principalName).getBacklog();
+		Backlog backlog= projectService.getProjectById(projectIdentifier.toUpperCase(), principalName).getBacklog();
 		task.setBacklog(backlog);		
 		//Set sequence number
 		Integer backlogSequence= backlog.getPTSequence();
 		backlogSequence++;
 		backlog.setPTSequence(backlogSequence);
-		task.setProjectSequence(projectIdentifier+"-"+backlogSequence);	//eg: ASDAS-1,ASDAS-2
-		task.setProjectIdentifier(projectIdentifier);			//keep track of project
+		task.setProjectSequence(projectIdentifier.toUpperCase()+"-"+backlogSequence);	//eg: ASDAS-1,ASDAS-2
+		task.setProjectIdentifier(projectIdentifier.toUpperCase());			//keep track of project
 		/***********************/
 		if(task.getPriority()==null || task.getPriority()==0) {
 			task.setPriority(3);		//3 is low prio, 1 is highest prio
@@ -39,15 +39,15 @@ public class TaskService {
 	
 	public Iterable<Task> getAllTasks(String identifier, String principalName) {
 		//Check project exists and belongs to user
-		projectService.getProjectById(identifier, principalName);
+		projectService.getProjectById(identifier.toUpperCase(), principalName);
 
-		Iterable<Task> tasks= taskRepo.findByProjectIdentifierOrderByPriority(identifier);
+		Iterable<Task> tasks= taskRepo.findByProjectIdentifierOrderByPriority(identifier.toUpperCase());
 		return tasks;
 	}
 
 	public Task getTaskByProjectSequence(String projectIdentifier, String projectSequence, String principalName) {
 		
-		Backlog backlog= projectService.getProjectById(projectIdentifier, principalName).getBacklog();
+		Backlog backlog= projectService.getProjectById(projectIdentifier.toUpperCase(), principalName).getBacklog();
 		if(backlog==null) {
 			throw new ProjectIdException("No project with identifier '"+ projectIdentifier.toUpperCase() +"' exists");
 		}
@@ -63,14 +63,14 @@ public class TaskService {
 	}
 	public Task updateTask(Task updatedTask, String projectIdentifier, String projectSequence, String principalName) {
 
-		Task task= getTaskByProjectSequence(projectIdentifier, projectSequence, principalName);
+		Task task= getTaskByProjectSequence(projectIdentifier.toUpperCase(), projectSequence, principalName);
 
 		updatedTask.setId(task.getId());
 		
 		return taskRepo.save(updatedTask);
 	}
 	public void deleteTaskById(String projectIdentifier, String projectSequence, String principalName) {
-		Task task= getTaskByProjectSequence(projectIdentifier, projectSequence, principalName);
+		Task task= getTaskByProjectSequence(projectIdentifier.toUpperCase(), projectSequence, principalName);
 		
 		taskRepo.delete(task);
 	}
