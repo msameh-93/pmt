@@ -48,7 +48,7 @@ public class ProjectService {
 			else {
 				project.setBacklog(backlogRepo.findByProjectIdentifier(project.getIdentifier().toUpperCase()));
 			}
-			
+			project.setIdentifier(project.getIdentifier().toUpperCase());
 			return projectRepo.save(project);			//Try persisting
 		} catch (Exception e) {
 			throw new ProjectIdException("Project ID '" + project.getIdentifier() + "' already exists");
@@ -63,7 +63,7 @@ public class ProjectService {
 		Project project= projectRepo.findByIdentifier(identifier.toUpperCase());
 		
 		if(project==null) {
-			throw new ProjectIdException("No project with '"+ identifier +"' exists");
+			throw new ProjectIdException("No projectzz with '"+ identifier +"' exists");
 		}
 		if(!project.getProjectLeader().equals(principalName)) {
 			throw new ProjectIdException("This Project does not belong to this user");
